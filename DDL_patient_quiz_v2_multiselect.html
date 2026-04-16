@@ -1,0 +1,448 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+.shell{background:var(--color-background-secondary);border-radius:12px;padding:1.5rem;display:flex;flex-direction:column;align-items:center;gap:1rem}
+.phone{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:24px;width:100%;max-width:420px;min-height:600px;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:14px 18px 0;display:flex;align-items:center;gap:10px}
+.back{font-size:13px;color:var(--color-text-tertiary);cursor:pointer;border:none;background:none;padding:4px 0}
+.back:hover{color:var(--color-text-secondary)}
+.prog-wrap{flex:1}
+.phases{display:flex;gap:3px;margin-bottom:3px}
+.ph{flex:1;height:3px;border-radius:2px;background:var(--color-border-tertiary);transition:background .3s}
+.ph.done{background:#1D9E75}.ph.act{background:#9FE1CB}
+.prog-lbl{font-size:11px;color:var(--color-text-tertiary);text-align:right}
+.scr{flex:1;padding:20px 20px 12px;display:flex;flex-direction:column}
+.eyebrow{font-size:11px;font-weight:500;color:#1D9E75;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+.greeting{font-size:13px;font-weight:500;color:#1D9E75;margin-bottom:10px}
+.q{font-size:19px;font-weight:500;color:var(--color-text-primary);line-height:1.3;margin-bottom:6px}
+.sub{font-size:13px;color:var(--color-text-secondary);line-height:1.55;margin-bottom:14px}
+.why-btn{font-size:12px;color:#0F6E56;cursor:pointer;margin-bottom:14px;display:inline-block;border-bottom:1px dashed #5DCAA5;background:none;border-top:none;border-left:none;border-right:none;padding:0}
+.why-panel{background:#E1F5EE;border-radius:8px;padding:10px 12px;font-size:12px;color:#085041;line-height:1.55;margin-bottom:12px;display:none}
+.cap-msg{font-size:12px;color:#BA7517;background:#FAEEDA;border-radius:6px;padding:8px 12px;margin-bottom:10px;display:none}
+.opts{display:flex;flex-direction:column;gap:8px;flex:1}
+.opt{border:0.5px solid var(--color-border-secondary);border-radius:8px;padding:11px 14px;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:10px;background:var(--color-background-primary)}
+.opt:hover{border-color:#1D9E75;background:#E1F5EE}
+.opt.sel{border-color:#1D9E75;border-width:1.5px;background:#E1F5EE}
+.opt.dim{opacity:.4;cursor:default;pointer-events:none}
+.opt-ico{width:32px;height:32px;border-radius:50%;background:var(--color-background-secondary);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.opt.sel .opt-ico{background:#9FE1CB}
+.opt-txt{flex:1}
+.opt-main{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.opt-sub{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.chk{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--color-border-secondary);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;transition:all .15s}
+.opt.sel .chk{background:#1D9E75;border-color:#1D9E75;color:#fff}
+.multi-hint{font-size:11px;color:var(--color-text-tertiary);margin-bottom:10px}
+.cta-area{padding:0 20px 20px}
+.btn{width:100%;padding:14px;background:#1D9E75;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:500;cursor:pointer;transition:opacity .15s}
+.btn:hover{opacity:.9}.btn:disabled{opacity:.35;cursor:default}
+.intl{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;text-align:center}
+.intl-ico{width:56px;height:56px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:16px}
+.intl-title{font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:8px;line-height:1.3}
+.intl-body{font-size:13px;color:var(--color-text-secondary);line-height:1.65}
+.result-hdr{background:#E1F5EE;padding:18px 20px 14px;text-align:center}
+.result-eyebrow{font-size:10px;font-weight:500;color:#1D9E75;letter-spacing:.08em;margin-bottom:6px}
+.result-name{font-size:20px;font-weight:500;color:#085041;margin-bottom:3px}
+.result-focus{font-size:13px;color:#0F6E56}
+.result-body{padding:16px 20px;flex:1;display:flex;flex-direction:column;gap:10px}
+.commitment{display:flex;gap:10px;align-items:flex-start;padding:11px 13px;border:0.5px solid var(--color-border-tertiary);border-radius:8px}
+.c-ico{font-size:16px;flex-shrink:0;margin-top:1px}
+.c-title{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:2px}
+.c-body{font-size:11px;color:var(--color-text-secondary);line-height:1.5}
+.txt-in{width:100%;padding:11px 13px;border:0.5px solid var(--color-border-secondary);border-radius:8px;font-size:14px;color:var(--color-text-primary);background:var(--color-background-primary);margin-bottom:10px}
+.txt-in:focus{outline:none;border-color:#1D9E75}
+.sms-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
+.sms-row label{font-size:12px;color:var(--color-text-secondary);line-height:1.5;cursor:pointer}
+.privacy{font-size:11px;color:var(--color-text-tertiary);margin-top:6px}
+.badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.badge{font-size:11px;padding:3px 10px;border-radius:12px;background:#E1F5EE;color:#085041;font-weight:500}
+</style>
+
+<h2 class="sr-only">Designer Drugs Labs patient quiz - interactive prototype v2 with multi-select goals</h2>
+
+<div class="shell">
+<div class="phone" id="phone">
+  <div id="topbar" class="topbar" style="display:none">
+    <button class="back" onclick="goBack()">Back</button>
+    <div class="prog-wrap">
+      <div class="phases">
+        <div class="ph act" id="ph0"></div>
+        <div class="ph" id="ph1"></div>
+        <div class="ph" id="ph2"></div>
+        <div class="ph" id="ph3"></div>
+        <div class="ph" id="ph4"></div>
+      </div>
+      <div class="prog-lbl" id="prog-lbl">Phase: Welcome</div>
+    </div>
+  </div>
+  <div id="area" style="flex:1;display:flex;flex-direction:column;overflow:hidden"></div>
+</div>
+</div>
+
+<script>
+const PHASES = ["Welcome","Your goal","Your body","Your life","Your profile"];
+let step = 0;
+let name = "";
+let ans = {};
+
+const GOAL_LABELS = [
+  "Hormones and energy","Weight and metabolism","Skin and appearance",
+  "Cycle and women's health","Men's whole health","Mental wellness"
+];
+
+const INTL1_COPY = {
+  single: {
+    0: {title:"That's a great place to start.", body:"Our pharmacists specialize in exactly this. The next few questions help us understand where you are right now - so your plan reflects your body, not a template."},
+    1: {title:"That's a great place to start.", body:"Weight and metabolism is one of our most active areas. The next few questions help us build a picture of your body before a pharmacist ever picks up the phone."},
+    2: {title:"Good. Skin is personal.", body:"And deeply connected to what's happening internally. The questions ahead help your pharmacist understand the full picture."},
+    3: {title:"You're in the right place.", body:"Our pharmacists understand that cycle health is rarely just one thing. The questions ahead help us go deeper before your consultation."},
+    4: {title:"You're in the right place.", body:"Men's whole health is one of our specialties. A few more questions and your pharmacist will be ready to go deeper with you."},
+    5: {title:"That matters.", body:"Mental wellness is whole-body work. The next questions help your pharmacist understand what else might be connected before they reach out."}
+  },
+  two: {title:"Two areas - one plan.", body:"More than one thing going on at once is common. Our pharmacists are built for this. The next questions help us build a complete picture so nothing gets missed."},
+  three: {title:"You're dealing with more than one thing at once.", body:"That's exactly what comprehensive care is for. Your profile will be flagged for one of our senior pharmacists who specializes in complex, multi-area cases."}
+};
+
+const STEPS = [
+  {type:"welcome", phase:0},
+  {type:"name", phase:0},
+  {type:"goal", phase:1},
+  {type:"intl1", phase:1},
+  {type:"single", phase:2, ey:"Your body",
+    q:"How would you describe how you've been feeling lately?",
+    sub:"Be honest - there are no wrong answers here.",
+    opts:[
+      {ico:"◐",t:"Running on empty",s:"Low energy, hard to get through the day"},
+      {ico:"◑",t:"Off but managing",s:"Something's not right but I function"},
+      {ico:"●",t:"Decent, want better",s:"I feel okay but I know I could feel more"},
+      {ico:"○",t:"Ready to optimize",s:"I feel good and want to go further"}
+    ]},
+  {type:"multi", phase:2, ey:"Your body", greeting:"Keep going",
+    q:"Which of these sound familiar?",
+    sub:"Select everything that applies.",
+    opts:[
+      {ico:"◇",t:"Trouble sleeping"},
+      {ico:"△",t:"Brain fog or poor focus"},
+      {ico:"◈",t:"Weight changes I can't explain"},
+      {ico:"○",t:"Mood swings or low mood"},
+      {ico:"✦",t:"Low libido"},
+      {ico:"⬡",t:"Skin concerns"},
+      {ico:"◐",t:"Fatigue that won't quit"},
+      {ico:"◑",t:"None of these currently"}
+    ]},
+  {type:"single", phase:2, ey:"Your body",
+    q:"Have you worked with a doctor or provider on any of this before?",
+    why:"If you have existing lab work or a current provider, we can work alongside them rather than starting from scratch.",
+    opts:[
+      {ico:"●",t:"Yes, I have a provider",s:"And possibly lab work too"},
+      {ico:"◑",t:"I've seen someone but it didn't stick",s:"Looking for something that actually helps"},
+      {ico:"○",t:"Not yet",s:"This is my first step"}
+    ]},
+  {type:"intl", phase:2, ico:"◈",
+    title:"You know your body better than anyone.",
+    body:"That's exactly why our pharmacists spend real time with you before making any recommendations. What you just shared helps them prepare before your first conversation."},
+  {type:"single", phase:3, ey:"Your life",
+    q:"How would you describe your typical week?",
+    sub:"Lifestyle is medicine. This helps us understand what's realistic for you.",
+    opts:[
+      {ico:"◐",t:"Packed - I barely have time",s:"Career, family, always on"},
+      {ico:"◑",t:"Busy but manageable",s:"Structured but full"},
+      {ico:"●",t:"Active and intentional",s:"I make time for health"},
+      {ico:"○",t:"Flexible right now",s:"I have capacity to focus on this"}
+    ]},
+  {type:"single", phase:3, ey:"Your life",
+    q:"What does success look like for you in six months?",
+    sub:"Think big. This is what your pharmacist will hold in mind.",
+    opts:[
+      {ico:"✦",t:"I wake up with energy and feel like myself again"},
+      {ico:"◇",t:"I've hit a weight or body composition goal"},
+      {ico:"△",t:"My skin and appearance reflect how I want to feel"},
+      {ico:"○",t:"I feel emotionally steady and mentally clear"},
+      {ico:"◈",t:"I have answers - and a plan I actually trust"}
+    ]},
+  {type:"intl", phase:3, ico:"○",
+    title:"We're building a picture of you - not a category.",
+    body:"Most pharmacies put you in a box. We're doing the opposite. Your answers are being used to personalize your intake before a pharmacist ever picks up the phone."},
+  {type:"single", phase:4, ey:"Your profile",
+    q:"How do you prefer to receive care?",
+    why:"This affects how we schedule your consultation and follow up.",
+    opts:[
+      {ico:"◐",t:"Virtual - from wherever I am",s:"Video or phone call"},
+      {ico:"◑",t:"In person when possible",s:"I'm in the Chattanooga area"},
+      {ico:"○",t:"Either works",s:"I'm flexible"}
+    ]},
+  {type:"single", phase:4, ey:"Your profile",
+    q:"What matters most to you in a care relationship?",
+    sub:"This shapes how your pharmacist will communicate with you.",
+    opts:[
+      {ico:"●",t:"Just give me the plan",s:"Efficient and direct"},
+      {ico:"◑",t:"Help me understand the why",s:"Educated and informed"},
+      {ico:"◐",t:"Be a partner over time",s:"Relationship and continuity"},
+      {ico:"○",t:"All of the above",s:"I want it all"}
+    ]},
+  {type:"contact", phase:4},
+  {type:"result", phase:4}
+];
+
+function upd() {
+  const s = STEPS[step];
+  const tb = document.getElementById("topbar");
+  tb.style.display = (s.type==="welcome"||s.type==="result") ? "none" : "flex";
+  for(let i=0;i<5;i++){
+    document.getElementById("ph"+i).className = "ph"+(i<s.phase?" done":i===s.phase?" act":"");
+  }
+  document.getElementById("prog-lbl").textContent = "Phase: "+PHASES[s.phase];
+  const area = document.getElementById("area");
+  area.innerHTML = "";
+  if(s.type==="welcome") doWelcome(area);
+  else if(s.type==="name") doName(area);
+  else if(s.type==="goal") doGoal(area);
+  else if(s.type==="intl1") doIntl1(area);
+  else if(s.type==="single") doSingle(area,s);
+  else if(s.type==="multi") doMulti(area,s);
+  else if(s.type==="intl") doIntl(area,s);
+  else if(s.type==="contact") doContact(area);
+  else if(s.type==="result") doResult(area);
+}
+
+function doWelcome(a) {
+  a.innerHTML=`
+  <div class="scr" style="justify-content:center">
+    <div style="font-size:11px;font-weight:500;color:#1D9E75;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px">Designer Drugs Labs</div>
+    <div style="font-size:24px;font-weight:500;color:var(--color-text-primary);line-height:1.25;margin-bottom:14px">Your body is one of a kind.<br>Your pharmacy should be too.</div>
+    <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.65;margin-bottom:22px">This isn't a contact form. It's the start of a real conversation with a pharmacist who will learn your name, read your answers, and build something made specifically for you.<br><br>Takes about 3 minutes.</div>
+    <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:24px;background:#E1F5EE;border-radius:8px;padding:12px">
+      <span style="font-size:14px;flex-shrink:0;margin-top:1px">◐</span>
+      <span style="font-size:12px;color:#085041;line-height:1.55">No algorithms. A licensed pharmacist reviews every profile before reaching out.</span>
+    </div>
+  </div>
+  <div class="cta-area">
+    <button class="btn" onclick="next()">Start my profile</button>
+    <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--color-text-tertiary)">Licensed to ship to all 50 states</div>
+  </div>`;
+}
+
+function doName(a) {
+  a.innerHTML=`
+  <div class="scr">
+    <div class="eyebrow">${PHASES[0]}</div>
+    <div class="q">First, what should we call you?</div>
+    <div class="sub">We'll use your name throughout so this feels like a real conversation.</div>
+    <input class="txt-in" id="ni" placeholder="Your first name" value="${name}" oninput="name=this.value.trim();document.getElementById('nb').disabled=!name">
+  </div>
+  <div class="cta-area">
+    <button class="btn" id="nb" onclick="next()" ${name?"":"disabled"}>Continue</button>
+  </div>`;
+  setTimeout(()=>{const n=document.getElementById("ni");if(n)n.focus();},80);
+}
+
+function doGoal(a) {
+  if(!ans[step]) ans[step]=[];
+  const sel = ans[step];
+  const atCap = sel.length>=3;
+  const icons=["✦","◈","◇","○","△","⬡"];
+  const subs=["HRT, testosterone, thyroid","GLP-1, nutrition support","Dermatologics, anti-aging","PMS, perimenopause, fertility","Performance, mood, vitality","Mood support, stress"];
+  a.innerHTML=`
+  <div class="scr">
+    <div class="eyebrow">Your goal</div>
+    ${name?`<div class="greeting">${name}, a quick question for you.</div>`:""}
+    <div class="q">What brings you here today?</div>
+    <div class="sub">Select up to 3. We'll build your plan around all of them.</div>
+    <button class="why-btn" id="why-g" onclick="toggleWhy('why-g','why-gp')">Why do we ask this?</button>
+    <div class="why-panel" id="why-gp">Your selections determine which pharmacists we match you with and how we prioritize your care plan.</div>
+    <div class="multi-hint">Select up to 3</div>
+    <div class="cap-msg" id="cap-msg" style="${atCap?"display:block":"display:none"}">Choose up to 3 that feel most urgent right now.</div>
+    <div class="opts" id="goal-opts">
+      ${GOAL_LABELS.map((l,i)=>`
+        <div class="opt${sel.includes(i)?" sel":""}${atCap&&!sel.includes(i)?" dim":""}" id="go${i}" onclick="selGoal(${i})">
+          <div class="opt-ico">${icons[i]}</div>
+          <div class="opt-txt">
+            <div class="opt-main">${l}</div>
+            <div class="opt-sub">${subs[i]}</div>
+          </div>
+          <div class="chk">${sel.includes(i)?"✓":""}</div>
+        </div>`).join("")}
+    </div>
+  </div>
+  <div class="cta-area">
+    <button class="btn" id="gcta" onclick="next()" ${sel.length>0?"":"disabled"}>Continue</button>
+  </div>`;
+}
+
+function selGoal(i) {
+  if(!ans[step]) ans[step]=[];
+  const sel=ans[step];
+  const idx=sel.indexOf(i);
+  if(idx>-1){
+    sel.splice(idx,1);
+  } else {
+    if(sel.length>=3) return;
+    sel.push(i);
+  }
+  doGoal(document.getElementById("area"));
+}
+
+function doIntl1(a) {
+  const goals = ans[2]||[];
+  let copy;
+  if(goals.length>=3) copy=INTL1_COPY.three;
+  else if(goals.length===2) copy=INTL1_COPY.two;
+  else copy=INTL1_COPY.single[goals[0]]||INTL1_COPY.single[0];
+  a.innerHTML=`
+  <div class="intl">
+    <div class="intl-ico">✦</div>
+    <div class="intl-title">${copy.title}</div>
+    <div class="intl-body">${copy.body}</div>
+    ${goals.length>1?`<div class="badge-row">${goals.map(g=>`<span class="badge">${GOAL_LABELS[g]}</span>`).join("")}</div>`:""}
+  </div>
+  <div class="cta-area"><button class="btn" onclick="next()">Keep going</button></div>`;
+}
+
+function doSingle(a,s) {
+  const sel=ans[step];
+  const sid="ss"+step;
+  a.innerHTML=`
+  <div class="scr">
+    <div class="eyebrow">${s.ey||PHASES[s.phase]}</div>
+    ${name?`<div class="greeting">${name}, a quick question for you.</div>`:""}
+    <div class="q">${s.q}</div>
+    ${s.sub?`<div class="sub">${s.sub}</div>`:""}
+    ${s.why?`<button class="why-btn" onclick="toggleWhy('wb${step}','wp${step}')">Why do we ask this?</button><div class="why-panel" id="wp${step}">${s.why}</div>`:""}
+    <div class="opts">
+      ${s.opts.map((o,i)=>`
+        <div class="opt${sel===i?" sel":""}" onclick="selSingle(${i},'${sid}')">
+          <div class="opt-ico">${o.ico}</div>
+          <div class="opt-txt">
+            <div class="opt-main">${o.t}</div>
+            ${o.s?`<div class="opt-sub">${o.s}</div>`:""}
+          </div>
+          <div class="chk">${sel===i?"✓":""}</div>
+        </div>`).join("")}
+    </div>
+  </div>
+  <div class="cta-area">
+    <button class="btn" id="sb${step}" onclick="next()" ${sel!==undefined?"":"disabled"}>Continue</button>
+  </div>`;
+}
+
+function selSingle(i,sid) {
+  ans[step]=i;
+  const opts=document.querySelectorAll(".opt");
+  opts.forEach((el,j)=>{
+    el.className="opt"+(j===i?" sel":"");
+    const c=el.querySelector(".chk");
+    if(c){c.textContent=j===i?"✓":"";c.style.background=j===i?"#1D9E75":"";c.style.borderColor=j===i?"#1D9E75":"";c.style.color=j===i?"#fff":"transparent";}
+  });
+  const sb=document.getElementById("sb"+step);
+  if(sb) sb.disabled=false;
+}
+
+function doMulti(a,s) {
+  if(!ans[step]) ans[step]=[];
+  const sel=ans[step];
+  a.innerHTML=`
+  <div class="scr">
+    <div class="eyebrow">${s.ey}</div>
+    ${(name&&s.greeting)?`<div class="greeting">${s.greeting}, ${name}.</div>`:""}
+    <div class="q">${s.q}</div>
+    <div class="multi-hint">${s.sub}</div>
+    <div class="opts" id="mopts">
+      ${s.opts.map((o,i)=>`
+        <div class="opt${sel.includes(i)?" sel":""}" id="mo${i}" onclick="selMulti(${i})">
+          <div class="opt-ico">${o.ico}</div>
+          <div class="opt-txt"><div class="opt-main">${o.t}</div></div>
+          <div class="chk">${sel.includes(i)?"✓":""}</div>
+        </div>`).join("")}
+    </div>
+  </div>
+  <div class="cta-area">
+    <button class="btn" id="mb" onclick="next()" ${sel.length>0?"":"disabled"}>Continue</button>
+  </div>`;
+}
+
+function selMulti(i) {
+  if(!ans[step]) ans[step]=[];
+  const sel=ans[step];
+  const NONE=7;
+  if(i===NONE){
+    ans[step]=[NONE];
+  } else {
+    const ni=sel.indexOf(NONE);
+    if(ni>-1) sel.splice(ni,1);
+    const idx=sel.indexOf(i);
+    if(idx>-1) sel.splice(idx,1);
+    else sel.push(i);
+  }
+  const s=STEPS[step];
+  s.opts.forEach((_,j)=>{
+    const el=document.getElementById("mo"+j);
+    if(!el) return;
+    const isSel=ans[step].includes(j);
+    el.className="opt"+(isSel?" sel":"");
+    const c=el.querySelector(".chk");
+    if(c){c.textContent=isSel?"✓":"";c.style.background=isSel?"#1D9E75":"";c.style.borderColor=isSel?"#1D9E75":"";c.style.color=isSel?"#fff":"transparent";}
+  });
+  const mb=document.getElementById("mb");
+  if(mb) mb.disabled=ans[step].length===0;
+}
+
+function doIntl(a,s) {
+  a.innerHTML=`
+  <div class="intl">
+    <div class="intl-ico">${s.ico}</div>
+    <div class="intl-title">${s.title}</div>
+    <div class="intl-body">${s.body}</div>
+  </div>
+  <div class="cta-area"><button class="btn" onclick="next()">Keep going</button></div>`;
+}
+
+function doContact(a) {
+  a.innerHTML=`
+  <div class="scr">
+    <div class="eyebrow">Almost there</div>
+    ${name?`<div class="greeting">${name}, you're almost done.</div>`:""}
+    <div class="q">Where should we send your personalized plan?</div>
+    <div class="sub" style="margin-bottom:16px">Your profile is ready. A pharmacist will review it before reaching out.</div>
+    <input class="txt-in" placeholder="Email address" type="email">
+    <input class="txt-in" placeholder="Phone number (optional)" type="tel">
+    <div class="sms-row">
+      <input type="checkbox" id="sms" style="margin-top:3px;flex-shrink:0">
+      <label for="sms">Text me when my pharmacist is ready to connect. I agree to receive SMS from Designer Drugs Labs.</label>
+    </div>
+    <div class="privacy">Your profile stays private. We will never sell your information.</div>
+  </div>
+  <div class="cta-area">
+    <button class="btn" onclick="next()">See my plan</button>
+  </div>`;
+}
+
+function doResult(a) {
+  const goals=ans[2]||[];
+  const goalText = goals.length===0?"your health":
+    goals.length===1?GOAL_LABELS[goals[0]]:
+    goals.length===2?`${GOAL_LABELS[goals[0]]} and ${GOAL_LABELS[goals[1]]}`:
+    `${GOAL_LABELS[goals[0]]}, ${GOAL_LABELS[goals[1]]}, and ${GOAL_LABELS[goals[2]]}`;
+  a.innerHTML=`
+  <div class="result-hdr">
+    <div class="result-eyebrow">YOUR PERSONALIZED PROFILE</div>
+    <div class="result-name">${name?name+"'s":"Your"} care plan</div>
+    <div class="result-focus">Focused on: ${goalText}</div>
+    ${goals.length>1?`<div class="badge-row" style="justify-content:center;margin-top:8px">${goals.map(g=>`<span class="badge">${GOAL_LABELS[g]}</span>`).join("")}</div>`:""}
+  </div>
+  <div class="result-body">
+    <div class="commitment"><div class="c-ico">◐</div><div><div class="c-title">A pharmacist will review this before calling</div><div class="c-body">Not a bot, not a scheduler. A licensed pharmacist reads your profile and prepares before your first conversation.</div></div></div>
+    <div class="commitment"><div class="c-ico">✦</div><div><div class="c-title">Your formula will be compounded for you</div><div class="c-body">Nothing off-the-shelf. Every compound is made to your exact dosage and delivery preference.</div></div></div>
+    <div class="commitment"><div class="c-ico">○</div><div><div class="c-title">This is the beginning, not a transaction</div><div class="c-body">We check in. We adjust. Your plan evolves as you do.</div></div></div>
+    <div style="text-align:center;font-size:11px;color:var(--color-text-tertiary);margin-top:4px">Expect to hear from your pharmacist within one business day.</div>
+  </div>`;
+}
+
+function toggleWhy(btnId, panelId) {
+  const p=document.getElementById(panelId);
+  if(p) p.style.display=p.style.display==="block"?"none":"block";
+}
+
+function next() { if(step<STEPS.length-1){step++;upd();} }
+function goBack() { if(step>0){step--;upd();} }
+
+upd();
+</script>
