@@ -79,9 +79,10 @@
 </div>
 
 <script>
-const PHASES = ["Welcome","Your goal","Your body","Your life","Your profile"];
+const PHASES = ["Welcome","Your Focus","Your Body","Your Life","Your Preferences"];
 let step = 0;
 let name = "";
+let lastName = "";
 let ans = {};
 
 const GOAL_LABELS = [
@@ -91,15 +92,15 @@ const GOAL_LABELS = [
 
 const INTL1_COPY = {
   single: {
-    0: {title:"That's a great place to start.", body:"Our pharmacists specialize in exactly this. The next few questions help us understand where you are right now - so your plan reflects your body, not a template."},
-    1: {title:"That's a great place to start.", body:"Weight and metabolism is one of our most active areas. The next few questions help us build a picture of your body before a pharmacist ever picks up the phone."},
-    2: {title:"Good. Skin is personal.", body:"And deeply connected to what's happening internally. The questions ahead help your pharmacist understand the full picture."},
-    3: {title:"You're in the right place.", body:"Our pharmacists understand that cycle health is rarely just one thing. The questions ahead help us go deeper before your consultation."},
-    4: {title:"You're in the right place.", body:"Men's whole health is one of our specialties. A few more questions and your pharmacist will be ready to go deeper with you."},
-    5: {title:"That matters.", body:"Mental wellness is whole-body work. The next questions help your pharmacist understand what else might be connected before they reach out."}
+    0: {title:"Great! You've come to the right place.", body:"Our pharmacists specialize in exactly this. The next few questions will help us understand where you are right now, so your plan matches you, not a template."},
+    1: {title:"Great! You've come to the right place.", body:"Our pharmacists specialize in exactly this. The next few questions will help us understand where you are right now, so your plan matches you, not a template."},
+    2: {title:"Great! You've come to the right place.", body:"Our pharmacists specialize in exactly this. The next few questions will help us understand where you are right now, so your plan matches you, not a template."},
+    3: {title:"Great! You've come to the right place.", body:"Our pharmacists specialize in exactly this. The next few questions will help us understand where you are right now, so your plan matches you, not a template."},
+    4: {title:"Great! You've come to the right place.", body:"Our pharmacists specialize in exactly this. The next few questions will help us understand where you are right now, so your plan matches you, not a template."},
+    5: {title:"Great! You've come to the right place.", body:"Our pharmacists specialize in exactly this. The next few questions will help us understand where you are right now, so your plan matches you, not a template."}
   },
-  two: {title:"Two areas - one plan.", body:"More than one thing going on at once is common. Our pharmacists are built for this. The next questions help us build a complete picture so nothing gets missed."},
-  three: {title:"You're dealing with more than one thing at once.", body:"That's exactly what comprehensive care is for. Your profile will be flagged for one of our senior pharmacists who specializes in complex, multi-area cases."}
+  two: {title:"Great! You've come to the right place.", body:"Our pharmacists specialize in exactly this. The next few questions will help us understand where you are right now, so your plan matches you, not a template."},
+  three: {title:"Great! You've come to the right place.", body:"Our pharmacists specialize in exactly this. The next few questions will help us understand where you are right now, so your plan matches you, not a template."}
 };
 
 const STEPS = [
@@ -108,76 +109,82 @@ const STEPS = [
   {type:"goal", phase:1},
   {type:"intl1", phase:1},
   {type:"single", phase:2, ey:"Your body",
-    q:"How would you describe how you've been feeling lately?",
-    sub:"Be honest - there are no wrong answers here.",
+    q:"How have you been feeling lately?",
+    sub:"Be honest. There are no wrong answers here.",
+    why:"Knowing where you are now helps us get you where you want to be.",
     opts:[
-      {ico:"◐",t:"Running on empty",s:"Low energy, hard to get through the day"},
-      {ico:"◑",t:"Off but managing",s:"Something's not right but I function"},
-      {ico:"●",t:"Decent, want better",s:"I feel okay but I know I could feel more"},
-      {ico:"○",t:"Ready to optimize",s:"I feel good and want to go further"}
+      {ico:"◐",t:"Running on empty.",s:"Struggling to get through the day."},
+      {ico:"◑",t:"Off but managing.",s:"I'm functioning, but something's not right."},
+      {ico:"●",t:"Decent but wanting an upgrade.",s:"Feeling okay but sure better is possible."},
+      {ico:"○",t:"Ready to optimize",s:"Feeling good and ready to feel great."}
     ]},
   {type:"multi", phase:2, ey:"Your body", greeting:"Keep going",
-    q:"Which of these sound familiar?",
-    sub:"Select everything that applies.",
+    q:"Which of these describe you?",
+    sub:"Select all that apply.",
+    why:"Understanding your symptoms will help us discover the underlying causes and how to address them.",
     opts:[
       {ico:"◇",t:"Trouble sleeping"},
       {ico:"△",t:"Brain fog or poor focus"},
-      {ico:"◈",t:"Weight changes I can't explain"},
+      {ico:"◈",t:"Unexplained weight changes"},
       {ico:"○",t:"Mood swings or low mood"},
       {ico:"✦",t:"Low libido"},
-      {ico:"⬡",t:"Skin concerns"},
-      {ico:"◐",t:"Fatigue that won't quit"},
-      {ico:"◑",t:"None of these currently"}
+      {ico:"⬡",t:"Skin problems"},
+      {ico:"◐",t:"Frequent fatigue"},
+      {ico:"◑",t:"None of these currently."}
     ]},
-  {type:"single", phase:2, ey:"Your body",
-    q:"Have you worked with a doctor or provider on any of this before?",
-    why:"If you have existing lab work or a current provider, we can work alongside them rather than starting from scratch.",
+  {type:"multi", phase:2, ey:"Your body",
+    q:"Got it. Have you worked with a doctor or provider on this before?",
+    sub:"Select all that apply.",
+    why:"If you have a provider, we can collaborate with them rather than starting from scratch.",
     opts:[
-      {ico:"●",t:"Yes, I have a provider",s:"And possibly lab work too"},
-      {ico:"◑",t:"I've seen someone but it didn't stick",s:"Looking for something that actually helps"},
-      {ico:"○",t:"Not yet",s:"This is my first step"}
+      {ico:"●",t:"Yes, I have a provider and lab work."},
+      {ico:"◈",t:"I have a provider but we haven't done lab work."},
+      {ico:"◑",t:"I've seen someone but it didn't help."},
+      {ico:"○",t:"Not yet. This is my first step."}
     ]},
   {type:"intl", phase:2, ico:"◈",
     title:"You know your body better than anyone.",
-    body:"That's exactly why our pharmacists spend real time with you before making any recommendations. What you just shared helps them prepare before your first conversation."},
+    body:"That's why your pharmacist will listen and learn from you before making any recommendations. Let's talk about your goals and how you want to go about achieving them.",
+    cta:"Continue"},
   {type:"single", phase:3, ey:"Your life",
     q:"How would you describe your typical week?",
-    sub:"Lifestyle is medicine. This helps us understand what's realistic for you.",
+    sub:"Help us understand what's realistic for you.",
     opts:[
-      {ico:"◐",t:"Packed - I barely have time",s:"Career, family, always on"},
-      {ico:"◑",t:"Busy but manageable",s:"Structured but full"},
-      {ico:"●",t:"Active and intentional",s:"I make time for health"},
-      {ico:"○",t:"Flexible right now",s:"I have capacity to focus on this"}
+      {ico:"◐",t:"Packed!",s:"I barely have time for this form."},
+      {ico:"◑",t:"Manageable.",s:"Juggling a lot but not dropping any balls."},
+      {ico:"●",t:"Active but intentional.",s:"I can make time for my health."},
+      {ico:"○",t:"Flexible.",s:"This is my focus right now."}
     ]},
-  {type:"single", phase:3, ey:"Your life",
-    q:"What does success look like for you in six months?",
-    sub:"Think big. This is what your pharmacist will hold in mind.",
+  {type:"multi", phase:3, ey:"Your Goals",
+    q:"Six months from now, what does success look like for you?",
+    sub:"Select all that apply. This is what your pharmacist will prioritize.",
     opts:[
-      {ico:"✦",t:"I wake up with energy and feel like myself again"},
-      {ico:"◇",t:"I've hit a weight or body composition goal"},
-      {ico:"△",t:"My skin and appearance reflect how I want to feel"},
-      {ico:"○",t:"I feel emotionally steady and mentally clear"},
-      {ico:"◈",t:"I have answers - and a plan I actually trust"}
+      {ico:"✦",t:"Waking up with energy and feeling like myself again."},
+      {ico:"◇",t:"Hitting and staying at my weight or body composition goal."},
+      {ico:"△",t:"Loving my skin and appearance."},
+      {ico:"○",t:"Feeling emotionally steady and mentally clear."},
+      {ico:"◈",t:"Having answers and a plan I actually trust."}
     ]},
   {type:"intl", phase:3, ico:"○",
-    title:"We're building a picture of you - not a category.",
-    body:"Most pharmacies put you in a box. We're doing the opposite. Your answers are being used to personalize your intake before a pharmacist ever picks up the phone."},
-  {type:"single", phase:4, ey:"Your profile",
-    q:"How do you prefer to receive care?",
-    why:"This affects how we schedule your consultation and follow up.",
+    title:"Almost there!",
+    body:"Most pharmacies just want to know what box you fit in. We want to know you. Your last step is telling us how you want us to communicate and collaborate with you.",
+    cta:"Let's Finish"},
+  {type:"single", phase:4, ey:"Your Preferences",
+    q:"How would you like to receive care?",
+    sub:"Your answer will affect how we schedule your consultation and follow ups.",
     opts:[
-      {ico:"◐",t:"Virtual - from wherever I am",s:"Video or phone call"},
-      {ico:"◑",t:"In person when possible",s:"I'm in the Chattanooga area"},
-      {ico:"○",t:"Either works",s:"I'm flexible"}
+      {ico:"◐",t:"Virtually, from wherever I am.",s:"Through video or phone calls."},
+      {ico:"◑",t:"In person when possible.",s:"I'm in the Chattanooga area."},
+      {ico:"○",t:"Either works.",s:"I'm flexible."}
     ]},
-  {type:"single", phase:4, ey:"Your profile",
-    q:"What matters most to you in a care relationship?",
-    sub:"This shapes how your pharmacist will communicate with you.",
+  {type:"single", phase:4, ey:"Your Preferences",
+    q:"How do you want us to work with you?",
+    sub:"We want to make feeling better as easy and convenient as possible.",
     opts:[
-      {ico:"●",t:"Just give me the plan",s:"Efficient and direct"},
-      {ico:"◑",t:"Help me understand the why",s:"Educated and informed"},
-      {ico:"◐",t:"Be a partner over time",s:"Relationship and continuity"},
-      {ico:"○",t:"All of the above",s:"I want it all"}
+      {ico:"●",t:"Just give me the plan.",s:"I'm all about efficiency."},
+      {ico:"◑",t:"Help me understand the why behind the how.",s:"I want to be educated and informed."},
+      {ico:"◐",t:"Partner with me.",s:"I want relationship and real care continuity."},
+      {ico:"○",t:"All of the above.",s:"Yes, yes, and yes."}
     ]},
   {type:"contact", phase:4},
   {type:"result", phase:4}
@@ -208,8 +215,8 @@ function doWelcome(a) {
   a.innerHTML=`
   <div class="scr" style="justify-content:center">
     <div style="font-size:11px;font-weight:500;color:#1D9E75;letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px">Designer Drugs Labs</div>
-    <div style="font-size:24px;font-weight:500;color:var(--color-text-primary);line-height:1.25;margin-bottom:14px">Your body is one of a kind.<br>Your pharmacy should be too.</div>
-    <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.65;margin-bottom:22px">This isn't a contact form. It's the start of a real conversation with a pharmacist who will learn your name, read your answers, and build something made specifically for you.<br><br>Takes about 3 minutes.</div>
+    <div style="font-size:24px;font-weight:500;color:var(--color-text-primary);line-height:1.25;margin-bottom:14px">You're unique.<br>Your healthcare should be too.</div>
+    <div style="font-size:13px;color:var(--color-text-secondary);line-height:1.65;margin-bottom:22px">This isn't a contact form. It's the start of a conversation with one of our pharmacists, who will review your answers and help design a treatment plan specifically for you.</div>
     <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:24px;background:#E1F5EE;border-radius:8px;padding:12px">
       <span style="font-size:14px;flex-shrink:0;margin-top:1px">◐</span>
       <span style="font-size:12px;color:#085041;line-height:1.55">No algorithms. A licensed pharmacist reviews every profile before reaching out.</span>
@@ -226,8 +233,9 @@ function doName(a) {
   <div class="scr">
     <div class="eyebrow">${PHASES[0]}</div>
     <div class="q">First, what should we call you?</div>
-    <div class="sub">We'll use your name throughout so this feels like a real conversation.</div>
-    <input class="txt-in" id="ni" placeholder="Your first name" value="${name}" oninput="name=this.value.trim();document.getElementById('nb').disabled=!name">
+    <div class="sub">We're excited to get acquainted.</div>
+    <input class="txt-in" id="ni" placeholder="First Name" value="${name}" oninput="name=this.value.trim();document.getElementById('nb').disabled=!name">
+    <input class="txt-in" id="li" placeholder="Last Name" value="${lastName}" oninput="lastName=this.value.trim()">
   </div>
   <div class="cta-area">
     <button class="btn" id="nb" onclick="next()" ${name?"":"disabled"}>Continue</button>
@@ -240,15 +248,15 @@ function doGoal(a) {
   const sel = ans[step];
   const atCap = sel.length>=3;
   const icons=["✦","◈","◇","○","△","⬡"];
-  const subs=["HRT, testosterone, thyroid","GLP-1, nutrition support","Dermatologics, anti-aging","PMS, perimenopause, fertility","Performance, mood, vitality","Mood support, stress"];
+  const subs=["HRT, testosterone, thyroid...","GLP-1, nutritional support...","Dermatologics, anti-aging...","PMS, perimenopause, fertility...","Performance, mood, vitality...","Mood support, stress relief..."];
   a.innerHTML=`
   <div class="scr">
-    <div class="eyebrow">Your goal</div>
+    <div class="eyebrow">Your Focus</div>
     ${name?`<div class="greeting">${name}, a quick question for you.</div>`:""}
     <div class="q">What brings you here today?</div>
-    <div class="sub">Select up to 3. We'll build your plan around all of them.</div>
+    <div class="sub">Select up to three.</div>
     <button class="why-btn" id="why-g" onclick="toggleWhy('why-g','why-gp')">Why do we ask this?</button>
-    <div class="why-panel" id="why-gp">Your selections determine which pharmacists we match you with and how we prioritize your care plan.</div>
+    <div class="why-panel" id="why-gp">Your answer will help us match you with the best pharmacist and prioritize your care.</div>
     <div class="multi-hint">Select up to 3</div>
     <div class="cap-msg" id="cap-msg" style="${atCap?"display:block":"display:none"}">Choose up to 3 that feel most urgent right now.</div>
     <div class="opts" id="goal-opts">
@@ -256,7 +264,7 @@ function doGoal(a) {
         <div class="opt${sel.includes(i)?" sel":""}${atCap&&!sel.includes(i)?" dim":""}" id="go${i}" onclick="selGoal(${i})">
           <div class="opt-ico">${icons[i]}</div>
           <div class="opt-txt">
-            <div class="opt-main">${l}</div>
+            <div class="opt-main">${l}.</div>
             <div class="opt-sub">${subs[i]}</div>
           </div>
           <div class="chk">${sel.includes(i)?"✓":""}</div>
@@ -294,7 +302,7 @@ function doIntl1(a) {
     <div class="intl-body">${copy.body}</div>
     ${goals.length>1?`<div class="badge-row">${goals.map(g=>`<span class="badge">${GOAL_LABELS[g]}</span>`).join("")}</div>`:""}
   </div>
-  <div class="cta-area"><button class="btn" onclick="next()">Keep going</button></div>`;
+  <div class="cta-area"><button class="btn" onclick="next()">Let's Go</button></div>`;
 }
 
 function doSingle(a,s) {
@@ -345,6 +353,7 @@ function doMulti(a,s) {
     ${(name&&s.greeting)?`<div class="greeting">${s.greeting}, ${name}.</div>`:""}
     <div class="q">${s.q}</div>
     <div class="multi-hint">${s.sub}</div>
+    ${s.why?`<button class="why-btn" onclick="toggleWhy('mwb${step}','mwp${step}')">Why do we ask this?</button><div class="why-panel" id="mwp${step}">${s.why}</div>`:""}
     <div class="opts" id="mopts">
       ${s.opts.map((o,i)=>`
         <div class="opt${sel.includes(i)?" sel":""}" id="mo${i}" onclick="selMulti(${i})">
@@ -362,11 +371,11 @@ function doMulti(a,s) {
 function selMulti(i) {
   if(!ans[step]) ans[step]=[];
   const sel=ans[step];
-  const NONE=7;
-  if(i===NONE){
+  const NONE=STEPS[step].opts.findIndex(o => /None of these currently/.test(o.t));
+  if(i===NONE && NONE>-1){
     ans[step]=[NONE];
   } else {
-    const ni=sel.indexOf(NONE);
+    const ni=NONE>-1 ? sel.indexOf(NONE) : -1;
     if(ni>-1) sel.splice(ni,1);
     const idx=sel.indexOf(i);
     if(idx>-1) sel.splice(idx,1);
@@ -392,16 +401,15 @@ function doIntl(a,s) {
     <div class="intl-title">${s.title}</div>
     <div class="intl-body">${s.body}</div>
   </div>
-  <div class="cta-area"><button class="btn" onclick="next()">Keep going</button></div>`;
+  <div class="cta-area"><button class="btn" onclick="next()">${s.cta||"Keep going"}</button></div>`;
 }
 
 function doContact(a) {
   a.innerHTML=`
   <div class="scr">
-    <div class="eyebrow">Almost there</div>
-    ${name?`<div class="greeting">${name}, you're almost done.</div>`:""}
-    <div class="q">Where should we send your personalized plan?</div>
-    <div class="sub" style="margin-bottom:16px">Your profile is ready. A pharmacist will review it before reaching out.</div>
+    <div class="eyebrow">Your Contact Information</div>
+    <div class="q">How should we contact you?</div>
+    <div class="sub" style="margin-bottom:16px">Your profile is ready! A pharmacist will review it before reaching out.</div>
     <input class="txt-in" placeholder="Email address" type="email">
     <input class="txt-in" placeholder="Phone number (optional)" type="tel">
     <div class="sms-row">
@@ -423,16 +431,14 @@ function doResult(a) {
     `${GOAL_LABELS[goals[0]]}, ${GOAL_LABELS[goals[1]]}, and ${GOAL_LABELS[goals[2]]}`;
   a.innerHTML=`
   <div class="result-hdr">
-    <div class="result-eyebrow">YOUR PERSONALIZED PROFILE</div>
-    <div class="result-name">${name?name+"'s":"Your"} care plan</div>
-    <div class="result-focus">Focused on: ${goalText}</div>
+    <div class="result-eyebrow">YOU DID IT</div>
+    <div class="result-name">You did it!</div>
+    <div class="result-focus">Your personalized care plan is in process, focusing on ${goalText}.</div>
     ${goals.length>1?`<div class="badge-row" style="justify-content:center;margin-top:8px">${goals.map(g=>`<span class="badge">${GOAL_LABELS[g]}</span>`).join("")}</div>`:""}
   </div>
   <div class="result-body">
-    <div class="commitment"><div class="c-ico">◐</div><div><div class="c-title">A pharmacist will review this before calling</div><div class="c-body">Not a bot, not a scheduler. A licensed pharmacist reads your profile and prepares before your first conversation.</div></div></div>
-    <div class="commitment"><div class="c-ico">✦</div><div><div class="c-title">Your formula will be compounded for you</div><div class="c-body">Nothing off-the-shelf. Every compound is made to your exact dosage and delivery preference.</div></div></div>
-    <div class="commitment"><div class="c-ico">○</div><div><div class="c-title">This is the beginning, not a transaction</div><div class="c-body">We check in. We adjust. Your plan evolves as you do.</div></div></div>
-    <div style="text-align:center;font-size:11px;color:var(--color-text-tertiary);margin-top:4px">Expect to hear from your pharmacist within one business day.</div>
+    <div class="commitment"><div class="c-ico">✦</div><div><div class="c-title">Thank you for trusting us with your answers.</div><div class="c-body">We're excited to design a care plan that uniquely suits you, your needs, and your goals.</div></div></div>
+    <div class="commitment"><div class="c-ico">◐</div><div><div class="c-title">We've matched you with one of our pharmacists.</div><div class="c-body">They will review your profile and then contact you. Expect to hear from them within one business day.</div></div></div>
   </div>`;
 }
 
